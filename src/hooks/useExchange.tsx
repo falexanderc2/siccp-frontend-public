@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import { useEffect, useState } from 'react';
 import useEvaluateNumber from './useEvaluateNumber';
 import useFormato from './useFormato'
+import useSnackBarSearch from './useSnackBarSearch';
 import useBackdrop from './useBackdrop';
 import queryExchange from '../services/queryExchange';
 
@@ -11,7 +12,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import useSnackBar from './useSnackBar';
 
 //leyend
 // ! xs, extra - small: 0px
@@ -33,7 +33,7 @@ let dolarOtros: number = (0.00)
 let dolarBCV: number = (0.00)
 
 export default function useExchange () {
-  const { ShowSnackBar, openSnackBar, settingSnackBar } = useSnackBar();
+  const { ShowSnackBarSearch, settingSnackBarSearch, openSnackBarSearch } = useSnackBarSearch();
   const { ShowBackdrop, openBackdrop, closeBackdrop } = useBackdrop();
   const { valueDecimal } = useEvaluateNumber();
   const [totalBolivarOficial, setTotalBolivarOficial] = useState<number>(0.00)
@@ -53,12 +53,11 @@ export default function useExchange () {
     if (!loadExchange) {
       loadExchange = true;
       (async (): Promise<any> => {
-        openBackdrop('Buscando valores del Dólar Oficial')
+        openBackdrop('Buscando valores del Dólar')
         try {
-          const searchOficial: any = await queryExchange('OFICIAL')
-          dolarBCV = await searchOficial
-          const searchOtros: any = await queryExchange('OTROS')
-          dolarOtros = await searchOtros
+          const respose: any = await queryExchange()
+          dolarBCV = respose.USD.sicad2
+          dolarOtros = respose.USD.dolartoday
           setMontoDolar(dolarOtros)
           setShowDolar(true)
           closeBackdrop()
@@ -69,8 +68,8 @@ export default function useExchange () {
           setMessageDolar('NO SE LOGRO OBTENER LOS VALORES DEL DOLAR')
           setShowDolar(false)
           closeBackdrop()
-          settingSnackBar(error.message, 'error')
-          openSnackBar()
+          settingSnackBarSearch(error.message, 'error')
+          openSnackBarSearch()
         }
       })();
     }
@@ -122,7 +121,7 @@ export default function useExchange () {
   const ShowExchange = (
     <>
       {ShowBackdrop}
-      {ShowSnackBar}
+      {ShowSnackBarSearch}
       <Grid container spacing={1}>
         <Grid container spacing={1} style={styleItem} >
           <Grid item={true} xs={_xs} sm={_sm} md={_md} xl={_xl} lg={_lg} style={styleItem}>
@@ -137,6 +136,5 @@ export default function useExchange () {
   )
   return { handleMonto, ShowExchange, montoDolar, tipoDolar }
 }
-
 
 
