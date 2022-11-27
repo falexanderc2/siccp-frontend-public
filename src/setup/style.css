@@ -1,0 +1,34 @@
+:root{
+  background-color: white;
+}
+::-webkit-scrollbar{
+  width: 10px;
+}
+/* ::-webkit-scrollbar-track{
+  background: #dddddd;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #db1d5c;
+} */
+
+/* Works on Firefox */
+* {
+  scrollbar-width:10px;
+  scrollbar-color: black rgba(0, 0, 255,0.5);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background:rgba(0, 0, 255,0.5);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: black;
+  border-radius: 10px;
+  border: 3px solid rgba(0, 0, 255,0.5);
+}
